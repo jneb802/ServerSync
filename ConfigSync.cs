@@ -122,6 +122,8 @@ internal class ConfigurationManagerAttributes
 [PublicAPI]
 public class ConfigSync
 {
+	private const long EverybodyPeerId = 0L;
+
 	public static bool ProcessingServerUpdate = false;
 
 	public readonly string Name;
@@ -193,7 +195,7 @@ public class ConfigSync
 			{
 				if (!ProcessingServerUpdate && syncedEntry.SynchronizedConfig)
 				{
-					Broadcast(ZRoutedRpc.Everybody, configEntry);
+					Broadcast(EverybodyPeerId, configEntry);
 				}
 			};
 			allConfigs.Add(syncedEntry);
@@ -228,7 +230,7 @@ public class ConfigSync
 		{
 			if (!ProcessingServerUpdate)
 			{
-				Broadcast(ZRoutedRpc.Everybody, customValue);
+				Broadcast(EverybodyPeerId, customValue);
 			}
 		};
 	}
@@ -711,7 +713,7 @@ public class ConfigSync
 		}
 
 		List<ZNetPeer> peers = (List<ZNetPeer>)AccessTools.DeclaredField(typeof(ZRoutedRpc), "m_peers").GetValue(ZRoutedRpc.instance);
-		if (target != ZRoutedRpc.Everybody)
+		if (target != EverybodyPeerId)
 		{
 			peers = peers.Where(p => p.m_uid == target).ToList();
 		}
